@@ -3,9 +3,11 @@ package main
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"math/rand"
+	"net/http"
 	"time"
 
 	opensearch "github.com/opensearch-project/opensearch-go"
@@ -20,7 +22,14 @@ type DeviceData struct {
 
 func main() {
 	cfg := opensearch.Config{
-		Addresses: []string{"http://localhost:9200"},
+		Addresses: []string{"https://localhost:9200"},
+		Username:  "",
+		Password:  "!",
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
+		},
 	}
 	client, err := opensearch.NewClient(cfg)
 	if err != nil {
